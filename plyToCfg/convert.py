@@ -36,7 +36,7 @@ def posToIndex(x, y, z):
 
 
 def rgbToIndex(r, g, b):
-    return (255 << 24) | (r << 16) | (g << 8) | b
+    return (r << 17) | (g << 9) | (b << 1) | 1
 
 
 with file.open() as data:
@@ -56,7 +56,7 @@ with file.open() as data:
     blocks = sorted(blocks, key=lambda block: block[0])
 
     lastIndex = -1
-    data = "blocks = "
+    data = "blocks = 0;"
 
     for block in blocks:
         index = block[0]
