@@ -1,1 +1,3 @@
 *.blend1
+plyToCfg/*
+!plyToCfg/*.py
