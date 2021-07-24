@@ -19,7 +19,7 @@ if not file.is_file():
     exit()
 
 if file.suffix != ".ply":
-    print("A .ply file must be specified")
+    print("A point cloud .ply file must be specified")
     exit()
 
 if not (args[1].isdigit() and args[2].isdigit() and args[3].isdigit()):
@@ -56,7 +56,7 @@ with file.open() as data:
     blocks = sorted(blocks, key=lambda block: block[0])
 
     lastIndex = -1
-    encoded = "blocks = "
+    data = "blocks = "
 
     for block in blocks:
         index = block[0]
@@ -64,14 +64,12 @@ with file.open() as data:
 
         air = index - lastIndex - 1
         if air > 0:
-            encoded += f"0;{air - 1};"
-            pass
+            data += f"0;{air - 1};"
 
-        encoded += f"{color};"
-
+        data += f"{color};"
         lastIndex = index
 
-    encoded += f"\nsize = {width};{height};{depth};"
+    data += f"\nsize = {width};{height};{depth};"
 
     with open(file.stem + ".cfg", "w") as file:
-        file.write(encoded + "\n")
+        file.write(data + "\n")
