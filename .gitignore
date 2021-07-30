@@ -1,3 +1,4 @@
 *.blend1
-plyToCfg/*
-!plyToCfg/*.py
+*.cfg
+!Maps/*.cfg
+*.vxl
