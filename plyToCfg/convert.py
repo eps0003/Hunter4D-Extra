@@ -31,11 +31,11 @@ height = int(args[2])
 depth = int(args[3])
 
 
-def posToIndex(x, y, z):
+def pos_to_index(x, y, z):
     return x + (z * width) + (y * width * depth)
 
 
-def rgbToIndex(r, g, b):
+def rgb_to_index(r, g, b):
     return (r << 17) | (g << 9) | (b << 1) | 1
 
 
@@ -49,8 +49,8 @@ with file.open() as data:
 
     for line in lines:
         values = [int(value) for value in line.split(" ")]
-        index = posToIndex(values[0], values[2] - int(height / 2), values[1])
-        color = rgbToIndex(values[3], values[4], values[5])
+        index = pos_to_index(values[0], values[2] - int(height / 2), values[1])
+        color = rgb_to_index(values[3], values[4], values[5])
         blocks.append(Block(index, color))
 
     blocks = sorted(blocks, key=lambda block: block[0])
