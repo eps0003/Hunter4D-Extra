@@ -15,7 +15,6 @@ namespace vxlToCfgGui
         private byte[] fileBytes;
         private int[,,] map = new int[512, 64, 512];
         private Color[,,] color = new Color[512, 64, 512];
-        private Color defaultBlockColor = Color.FromArgb(103, 64, 30);
         private Bitmap img;
 
         public Form1()
@@ -129,7 +128,6 @@ namespace vxlToCfgGui
                         for (y = 0; y < 64; ++y)
                         {
                             SetGeom(x, y, z, 1);
-                            SetColor(x, y, z, defaultBlockColor);
                         }
                         y = 0;
                         while (true)
@@ -210,47 +208,16 @@ namespace vxlToCfgGui
             }
         }
 
-        private string ToBase(int value, char[] baseChars)
-        {
-            // 32 is the worst cast buffer size for base 2 and int.MaxValue
-            int i = 32;
-            char[] buffer = new char[i];
-            int targetBase = baseChars.Length;
-
-            do
-            {
-                buffer[--i] = baseChars[value % targetBase];
-                value = value / targetBase;
-            }
-            while (value > 0);
-
-            char[] result = new char[32 - i];
-            Array.Copy(buffer, i, result, 0, 32 - i);
-
-            return new string(result);
-        }
-
-        private char[] baseChars = {
-            '0','1','2','3','4','5','6','7','8','9',
-            'a','b','c','d','e','f'/*,'g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
-            'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'*/
-        };
-
         public void ExportFile()
         {
             uint EncodeColor(Color color)
             {
-                return (uint)((color.R << 17) | (color.G << 9) | (color.B << 1) | 1);
+                return (uint)((color.R << 18) | (color.G << 10) | (color.B << 2) | 1);
             }
-
-            //string EncodeColor(Color color)
-            //{
-            //    return ToBase((color.R << 17) | (color.G << 9) | (color.B << 1) | 1, baseChars);
-            //}
 
             MessageBox.Show("Exporting.");
 
-            StringBuilder data = new StringBuilder("blocks = 0;");
+            StringBuilder data = new StringBuilder("blocks = ");
 
             bool prevVisible = true;
             int lastVisibleIndex = 0;
@@ -268,13 +235,21 @@ namespace vxlToCfgGui
                         {
                             if (!prevVisible)
                             {
-                                data.Append("0;");
-                                data.Append(i - lastVisibleIndex - 2);
+                                data.Append((i - lastVisibleIndex - 2) << 1);
                                 data.Append(";");
                             }
 
                             Color block = color[x, y, z];
-                            data.Append(EncodeColor(block));
+
+                            if (block.IsEmpty)
+                            {
+                                data.Append(3);
+                            }
+                            else
+                            {
+                                data.Append(EncodeColor(block));
+                            }
+
                             data.Append(";");
 
                             lastVisibleIndex = i;

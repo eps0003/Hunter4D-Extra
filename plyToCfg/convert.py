@@ -36,7 +36,7 @@ def pos_to_index(x, y, z):
 
 
 def rgb_to_index(r, g, b):
-    return (r << 17) | (g << 9) | (b << 1) | 1
+    return (r << 18) | (g << 10) | (b << 2) | 1
 
 
 with file.open() as data:
@@ -56,7 +56,7 @@ with file.open() as data:
     blocks = sorted(blocks, key=lambda block: block[0])
 
     lastIndex = -1
-    data = "blocks = 0;"
+    data = "blocks = "
 
     for block in blocks:
         index = block[0]
@@ -64,7 +64,7 @@ with file.open() as data:
 
         air = index - lastIndex - 1
         if air > 0:
-            data += f"0;{air - 1};"
+            data += f"{(air - 1) << 1};"
 
         data += f"{color};"
         lastIndex = index
